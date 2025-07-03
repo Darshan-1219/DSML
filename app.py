@@ -8,7 +8,7 @@ st.title("Stock Analysis")
 st.sidebar.header("User Input")
 
 def get_user_input():
-    stock_symbol = st.sidebar.text_input("Stock Symbol", "NIFTY")
+    stock_symbol = st.sidebar.text_input("Stock Symbol", "^NSEI", help="Enter the stock symbol (e.g., ^NSEI for Nifty 50)")
     start_date = st.sidebar.date_input("Start Date", pd.to_datetime("2025-06-27"))
     end_date = st.sidebar.date_input("End Date", pd.to_datetime(pd.Timestamp.today()))
     return stock_symbol, start_date, end_date
@@ -47,7 +47,13 @@ import requests
 
 st.subheader("Options Data")
 try:
-    response = requests.get("http://localhost:5000/api/option_chain", params={"symbol": stock_symbol})
+   
+    params = {"symbol": stock_symbol}
+    if params["symbol"].startswith('^NSEI'):
+        params["symbol"] = 'NIFTY'
+    elif params["symbol"].startswith('^BSESN'):
+        params["symbol"] = 'SENSEX'
+    response = requests.get("http://localhost:5000/api/option_chain", params=params)
     if response.status_code == 200:
         options_data = response.json()
         # Adjust the key below to match the structure of your JSON

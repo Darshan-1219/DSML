@@ -29,10 +29,10 @@ def get_stock_data():
         return jsonify({"error": str(e)}), 500
 
 import requests
-@app.route('/api/option_chain', methods=['GET'])
+@app.route('/api/option_chain', methods=['POST', 'GET'])
 def get_option_chain():
     symbol = request.args.get('symbol', default='NIFTY')
-   # expiry_date = pd.to_datetime(pd.Timestamp.today())  # e.g., '10-Jul-2025'
+    expiry_date = pd.to_datetime(pd.Timestamp.today()).strftime('%d-%b-%Y')
     url = f'https://www.nseindia.com/api/option-chain-indices?symbol={symbol}'
     # if expiry_date:
     #     url += f'&expiryDate={expiry_date}'
